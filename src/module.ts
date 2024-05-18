@@ -29,6 +29,15 @@ export interface ModuleOptions {
    * @docs https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
    */
   clientId: string
+
+  /**
+   * To authenticate, you call the login function. Two options exist to make the adapter automatically authenticate. You can pass login-required or check-sso
+   * @default process.env.KEYCLOAK_ONLOAD
+   * @example 'login-required'
+   * @type string
+   * @docs https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
+   */
+  onLoad: string | undefined
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -42,6 +51,7 @@ export default defineNuxtModule<ModuleOptions>({
     url: process.env.KEYCLOAK_URL as string,
     realm: process.env.KEYCLOAK_REALM as string,
     clientId: process.env.KEYCLOAK_CLIENT_ID as string,
+    onLoad: process.env.KEYCLOAK_ON_LOAD as string,
   },
   setup(_options, _nuxt) {
     const { resolve } = createResolver(import.meta.url)
@@ -51,6 +61,7 @@ export default defineNuxtModule<ModuleOptions>({
       url: _options.url,
       realm: _options.realm,
       clientId: _options.clientId,
+      onload: _options.onLoad,
     })
 
     //Make sure the required configs are configured

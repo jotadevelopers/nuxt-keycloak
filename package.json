@@ -29,7 +29,8 @@
   },
   "dependencies": {
     "@nuxt/kit": "^3.11.2",
-    "defu": "^6.1.4"
+    "defu": "^6.1.4",
+    "keycloak-js": "^24.0.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.2.0",
