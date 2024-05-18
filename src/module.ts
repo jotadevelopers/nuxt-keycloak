@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, resolveModule, addPlugin } from '@nuxt/kit'
 import defu from 'defu'
 
 // Module options TypeScript interface definition
@@ -32,12 +32,20 @@ export interface ModuleOptions {
 
   /**
    * To authenticate, you call the login function. Two options exist to make the adapter automatically authenticate. You can pass login-required or check-sso
-   * @default process.env.KEYCLOAK_ONLOAD
+   * @default process.env.KEYCLOAK_AUTHENTICATE
    * @example 'login-required'
    * @type string
    * @docs https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
    */
-  onLoad: string | undefined
+  authenticate: string
+  /**
+   * Redirection options, set routes to skip in authenticate
+   * @default
+   * {
+      exclude: [],
+    }
+   */
+  redirectOptions: { exclude?: string[] }
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -51,7 +59,8 @@ export default defineNuxtModule<ModuleOptions>({
     url: process.env.KEYCLOAK_URL as string,
     realm: process.env.KEYCLOAK_REALM as string,
     clientId: process.env.KEYCLOAK_CLIENT_ID as string,
-    onLoad: process.env.KEYCLOAK_ON_LOAD as string,
+    authenticate: (process.env.KEYCLOAK_ON_LOAD as string) ?? 'check-sso',
+    redirectOptions: { exclude: [] },
   },
   setup(_options, _nuxt) {
     const { resolve } = createResolver(import.meta.url)
@@ -61,18 +70,21 @@ export default defineNuxtModule<ModuleOptions>({
       url: _options.url,
       realm: _options.realm,
       clientId: _options.clientId,
-      onload: _options.onLoad,
+      authenticate: _options.authenticate,
+      redirectOptions: _options.redirectOptions,
     })
 
     //Make sure the required configs are configured
-    if (_nuxt.options.runtimeConfig.public.keycloak.url) {
+    if (!_nuxt.options.runtimeConfig.public.keycloak.url) {
       console.warn('Missing keycloak url, set it either in `nuxt.config.js` or via env variable')
     }
-    if (_nuxt.options.runtimeConfig.public.keycloak.realm) {
+    if (!_nuxt.options.runtimeConfig.public.keycloak.realm) {
       console.warn('Missing keycloak realm, set it either in `nuxt.config.js` or via env variable')
     }
-    if (_nuxt.options.runtimeConfig.public.keycloak.client) {
+    if (!_nuxt.options.runtimeConfig.public.keycloak.clientId) {
       console.warn('Missing keycloak clientId, set it either in `nuxt.config.js` or via env variable')
     }
+    addPlugin(resolve('./runtime/plugins/keycloak.client.ts'))
+    addPlugin(resolve('./runtime/plugins/auth-redirect.ts'))
   },
 })

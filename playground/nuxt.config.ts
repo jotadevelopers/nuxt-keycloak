@@ -1,5 +1,12 @@
 export default defineNuxtConfig({
   modules: ['../src/module'],
-  myModule: {},
+  keycloak: {
+    url: 'http://localhost:8080',
+    realm: 'myrealm',
+    clientId: 'my-client',
+    redirectOptions: {
+      exclude: ['/'],
+    },
+  },
   devtools: { enabled: true },
 })
