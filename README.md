@@ -6,7 +6,7 @@ This is a Keycloak module for Nuxt
 
 - Nuxt 3 ready
 - Vue 3 composables
-- Keycloak client authentication support
+- Keycloak client side authentication support
 - Use keycloak-js client
 - TypeScript support
 
@@ -18,7 +18,7 @@ This is a Keycloak module for Nuxt
 2. Install dependencies using `yarn install` or `npm install`
 3. Prepare development server using `yarn dev:prepare` or `npm run dev:prepare`
 4. Build module using `yarn build` or `npm run build`
-5. Launch keycloak in docker container `docker composer up`
+5. Launch keycloak in docker container `docker compose up`
 6. Launch playground using `yarn dev` or `npm run dev`
 
 ## License
