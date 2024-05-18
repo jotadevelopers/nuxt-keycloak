@@ -1,5 +1,5 @@
-import { defineNuxtPlugin, useRuntimeConfig, useCookie } from '#imports'
-import Keycloak from 'keycloak-js'
+import { defineNuxtPlugin, useRuntimeConfig } from '#imports'
+import Keycloak, { type KeycloakOnLoad } from 'keycloak-js'
 
 export default defineNuxtPlugin({
   name: 'nuxt-keycloak',
@@ -12,7 +12,7 @@ export default defineNuxtPlugin({
       clientId: runtimeConfig.public.keycloak.clientId,
     })
     await keycloak.init({
-      onLoad: runtimeConfig.public.keycloak.onLoad,
+      onLoad: runtimeConfig.public.keycloak.onLoad as KeycloakOnLoad,
     })
 
     keycloak.updateToken(2000)

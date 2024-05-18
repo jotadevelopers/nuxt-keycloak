@@ -1,5 +1,6 @@
-import { defineNuxtModule, createResolver, resolveModule, addPlugin } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addPlugin, addImportsDir } from '@nuxt/kit'
 import defu from 'defu'
+import type { KeycloakOnLoad } from 'keycloak-js'
 
 // Module options TypeScript interface definition
 export interface ModuleOptions {
@@ -32,12 +33,12 @@ export interface ModuleOptions {
 
   /**
    * To authenticate, you call the login function. Two options exist to make the adapter automatically authenticate. You can pass login-required or check-sso
-   * @default process.env.KEYCLOAK_AUTHENTICATE
+   * @default process.env.KEYCLOAK_ON_LOAD
    * @example 'login-required'
-   * @type string
+   * @type KeycloakOnLoad
    * @docs https://www.keycloak.org/docs/latest/securing_apps/index.html#_javascript_adapter
    */
-  authenticate: string
+  onLoad: KeycloakOnLoad
   /**
    * Redirection options, set routes to skip in authenticate
    * @default
@@ -59,7 +60,7 @@ export default defineNuxtModule<ModuleOptions>({
     url: process.env.KEYCLOAK_URL as string,
     realm: process.env.KEYCLOAK_REALM as string,
     clientId: process.env.KEYCLOAK_CLIENT_ID as string,
-    authenticate: (process.env.KEYCLOAK_ON_LOAD as string) ?? 'check-sso',
+    onLoad: (process.env.KEYCLOAK_ON_LOAD as KeycloakOnLoad) ?? 'check-sso',
     redirectOptions: { exclude: [] },
   },
   setup(_options, _nuxt) {
@@ -70,7 +71,7 @@ export default defineNuxtModule<ModuleOptions>({
       url: _options.url,
       realm: _options.realm,
       clientId: _options.clientId,
-      authenticate: _options.authenticate,
+      onLoad: _options.onLoad,
       redirectOptions: _options.redirectOptions,
     })
 
@@ -84,7 +85,10 @@ export default defineNuxtModule<ModuleOptions>({
     if (!_nuxt.options.runtimeConfig.public.keycloak.clientId) {
       console.warn('Missing keycloak clientId, set it either in `nuxt.config.js` or via env variable')
     }
+
     addPlugin(resolve('./runtime/plugins/keycloak.client.ts'))
     addPlugin(resolve('./runtime/plugins/auth-redirect.ts'))
+
+    addImportsDir(resolve('./runtime/composables'))
   },
 })
