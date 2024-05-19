@@ -44,6 +44,20 @@ export default defineNuxtConfig({
 5. Launch keycloak in docker container `docker compose up`
 6. Launch playground using `yarn dev` or `npm run dev`
 
+### Keycloak admin user
+
+```
+user: root
+password: root
+```
+
+### Keycloak test user
+
+```
+user: user
+password: 12345678
+```
+
 ## License
 
 [MIT License](./LICENSE)
