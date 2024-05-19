@@ -12,6 +12,29 @@ This is a Keycloak module for Nuxt
 
 ## Usage
 
+1. Add nuxt-keycloak depedence to your project:
+
+`yarn add @jotadevelopers/nuxt-keycloak`
+
+2. Then, add nuxt-keycloak to the modules section of your Nuxt configuration:
+
+```bash
+export default defineNuxtConfig({
+    modules: ['@jotadevelopers/nuxt-keycloak'],
+    keycloak: {
+        url: '<keycloak-url>',
+        realm: '<keycloak-realm-name>',
+        clientId: '<keycloack-client-id>',
+        # url to exclude from authentication check
+        redirectOptions: {
+            exclude: ['/'],
+        },
+    },
+...
+})
+
+```
+
 ## Development
 
 1. Clone this repository

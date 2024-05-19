@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Keycloak module for Nuxt",
   "repository": "jotadevelopers/nuxt-keycloak",
+  "author": "Josimar Costa",
   "license": "MIT",
   "exports": {
     ".": {
